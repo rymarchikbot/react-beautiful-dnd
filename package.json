@@ -107,7 +107,7 @@
     "jest-junit": "^6.3.0",
     "jest-watch-typeahead": "^0.2.1",
     "markdown-it": "^8.4.2",
-    "prettier": "^1.16.4",
+    "prettier": "^1.17.0",
     "raf-stub": "^2.0.2",
     "react": "16.8.5",
     "react-dom": "16.8.5",
