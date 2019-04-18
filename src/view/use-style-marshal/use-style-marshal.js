@@ -15,13 +15,16 @@ const getHead = (): HTMLHeadElement => {
   return head;
 };
 
-const createStyleEl = (): HTMLStyleElement => {
+const createStyleEl = (nonce?: string): HTMLStyleElement => {
   const el: HTMLStyleElement = document.createElement('style');
+  if (nonce) {
+    el.setAttribute('nonce', nonce);
+  }
   el.type = 'text/css';
   return el;
 };
 
-export default function useStyleMarshal(uniqueId: number) {
+export default function useStyleMarshal(uniqueId: number, nonce?: string) {
   const uniqueContext: string = useMemoOne(() => `${uniqueId}`, [uniqueId]);
   const styles: Styles = useMemoOne(() => getStyles(uniqueContext), [
     uniqueContext,
@@ -52,8 +55,8 @@ export default function useStyleMarshal(uniqueId: number) {
       'style elements already mounted',
     );
 
-    const always: HTMLStyleElement = createStyleEl();
-    const dynamic: HTMLStyleElement = createStyleEl();
+    const always: HTMLStyleElement = createStyleEl(nonce);
+    const dynamic: HTMLStyleElement = createStyleEl(nonce);
 
     // store their refs
     alwaysRef.current = always;

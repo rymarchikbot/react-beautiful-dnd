@@ -36,6 +36,7 @@ import usePrevious from '../use-previous-ref';
 type Props = {|
   ...Responders,
   uniqueId: number,
+  styleNonce?: string,
   setOnError: (onError: Function) => void,
   // we do not technically need any children for this component
   children: Node | null,
@@ -49,7 +50,7 @@ const createResponders = (props: Props): Responders => ({
 });
 
 export default function App(props: Props) {
-  const { uniqueId, setOnError } = props;
+  const { uniqueId, styleNonce, setOnError } = props;
   // flow does not support MutableRefObject
   // let storeRef: MutableRefObject<Store>;
   let storeRef;
@@ -64,7 +65,7 @@ export default function App(props: Props) {
   }, []);
 
   const announce: Announce = useAnnouncer(uniqueId);
-  const styleMarshal: StyleMarshal = useStyleMarshal(uniqueId);
+  const styleMarshal: StyleMarshal = useStyleMarshal(uniqueId, styleNonce);
 
   const lazyDispatch: Action => void = useCallbackOne(
     (action: Action): void => {
