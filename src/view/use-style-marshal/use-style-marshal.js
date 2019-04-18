@@ -15,16 +15,16 @@ const getHead = (): HTMLHeadElement => {
   return head;
 };
 
-const createStyleEl = (nonce?: string): HTMLStyleElement => {
+const createStyleEl = (): HTMLStyleElement => {
   const el: HTMLStyleElement = document.createElement('style');
-  if (nonce) {
-    el.setAttribute('nonce', nonce);
-  }
   el.type = 'text/css';
   return el;
 };
 
-export default function useStyleMarshal(uniqueId: number, nonce?: string) {
+export default function useStyleMarshal(
+  uniqueId: number,
+  disableDynamicStyles?: boolean = false,
+) {
   const uniqueContext: string = useMemoOne(() => `${uniqueId}`, [uniqueId]);
   const styles: Styles = useMemoOne(() => getStyles(uniqueContext), [
     uniqueContext,
@@ -35,11 +35,14 @@ export default function useStyleMarshal(uniqueId: number, nonce?: string) {
   const setDynamicStyle = useCallbackOne(
     // Using memoizeOne to prevent frequent updates to textContext
     memoizeOne((proposed: string) => {
+      if (disableDynamicStyles) {
+        return;
+      }
       const el: ?HTMLStyleElement = dynamicRef.current;
       invariant(el, 'Cannot set dynamic style element if it is not set');
       el.textContent = proposed;
     }),
-    [],
+    [disableDynamicStyles],
   );
 
   const setAlwaysStyle = useCallbackOne((proposed: string) => {
@@ -50,13 +53,17 @@ export default function useStyleMarshal(uniqueId: number, nonce?: string) {
 
   // using layout effect as programatic dragging might start straight away (such as for cypress)
   useIsomorphicLayoutEffect(() => {
+    if (disableDynamicStyles) {
+      return;
+    }
+
     invariant(
       !alwaysRef.current && !dynamicRef.current,
       'style elements already mounted',
     );
 
-    const always: HTMLStyleElement = createStyleEl(nonce);
-    const dynamic: HTMLStyleElement = createStyleEl(nonce);
+    const always: HTMLStyleElement = createStyleEl();
+    const dynamic: HTMLStyleElement = createStyleEl();
 
     // store their refs
     alwaysRef.current = always;
@@ -91,6 +98,7 @@ export default function useStyleMarshal(uniqueId: number, nonce?: string) {
     styles.always,
     styles.resting,
     uniqueContext,
+    disableDynamicStyles,
   ]);
 
   const dragging = useCallbackOne(() => setDynamicStyle(styles.dragging), [

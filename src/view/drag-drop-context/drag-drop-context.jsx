@@ -7,7 +7,7 @@ import App from './app';
 
 type Props = {|
   ...Responders,
-  styleNonce?: string,
+  disableDynamicStyles?: boolean,
   // we do not technically need any children for this component
   children: Node | null,
 |};
