@@ -26,7 +26,10 @@ type Props = {|
 
 ## Basic usage
 
+### Using a `class` component
+
 ```js
+import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 
 class App extends React.Component {
@@ -59,7 +62,41 @@ class App extends React.Component {
 }
 ```
 
-## `Responder`s
+### Using a `function` component
+
+```js
+import React from 'react';
+import { DragDropContext } from 'react-beautiful-dnd';
+
+function App() {
+  const onBeforeDragStart = useCallback(() => {
+    /*...*/
+  }, []);
+
+  const onDragStart = useCallback(() => {
+    /*...*/
+  }, []);
+  const onDragUpdate = useCallback(() => {
+    /*...*/
+  }, []);
+  const onDragEnd = useCallback(() => {
+    // the only one that is required
+  }, []);
+
+  return (
+    <DragDropContext
+      onBeforeDragStart={onBeforeDragStart}
+      onDragStart={onDragStart}
+      onDragUpdate={onDragUpdate}
+      onDragEnd={onDragEnd}
+    >
+      <div>Hello world</div>
+    </DragDropContext>
+  );
+}
+```
+
+## `Responders`
 
 > `Responders` were previously known as `Hooks`
 
